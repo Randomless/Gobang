@@ -28,31 +28,31 @@ void jiemian::chessicont(int x)
 {
     if (x == 1) A++;
     if (x == 2) B++;
-    std::cout<< "A : B —" << A << ":" << B << '\t';
+    std::cout<< "A : B -" << A << ":" << B << '\t';
 }
 
 
 void jiemian::Jiemainbuzhi()
 {
-    std::cout << "————五子棋游戏————ZXL" << endl;
-    std::cout << "################################" << endl;
-    std::cout << "#     1.进入游戏   E           # " << endl;
-    std::cout << "#     2.退出游戏   0 0         # " << endl;
-    std::cout << "#     3.选择关卡   C           # " << endl; 
+    std::cout << "_____________start game_________" << endl;
+    std::cout << "________________________________" << endl;
+    std::cout << "_____________1.enter game  E_____________" << endl;
+    std::cout << "_____________2.quit game 0 0_____________" << endl;
+    std::cout << "_____________3.chose level  C_____________" << endl; 
     std::cout << "################################" << endl;
 }
 
 
 void jiemian::Qijubuzhi()
 {
-    std::cout << "plaese entry — x — y " << endl;
+    std::cout << "plaese entry - x - y " << endl;
     std::cout << setw(3) << setfill(' ') << left << 0;
     for (int i = 1; i < N + 1; i++) 
     {
         std::cout << setw(6) << setfill(' ') << right << i;
     }
     std::cout << endl;
-    std::cout << "   |";
+    std::cout << "   |";
     for (int i = 1; i < N + 1; i++) 
     {
         std::cout << "-----|";
@@ -65,11 +65,11 @@ void jiemian::Qijubuzhi()
             if (j == 0) {
                 std::cout << setw(3) << setfill(' ') << left << i << '|';
             }else {
-                std::cout << "  " << chessBord[i][j] << "  |";
+                std::cout << "  " << chessBord[i][j] << "  |";
             }
         }
         std::cout << endl;
-        std::cout << "   |";
+        std::cout << "  |";
         for (int i = 1; i < N + 1; i++) 
         {
             std::cout << "-----|";
@@ -93,11 +93,11 @@ void jiemian::Chesspainter(int x, int y) //下棋
 {
     if (-1 == check(x, y))
     {
-        std::cout << "坐标请输入棋盘之间的数"<<endl;
+        std::cout << "invalid coordinate!please input again!"<<endl;
     }
     else if (0 == check(x, y))
     {
-        std::cout << "坐标已经输入过，请不要重复输入" << endl;
+        std::cout << "already input x y ,dont input again!" << endl;
     }
     else
     {
@@ -105,13 +105,13 @@ void jiemian::Chesspainter(int x, int y) //下棋
         if (flag == 0)
         {
             chessBord[x][y] = 'x';
-            std::cout << "Palyer " << "A with 'x' IS " << "X ," << x << "Y ," << y << endl;
+            std::cout << "Palyer " << "A with 'x' IS " << "X," << x << "Y," << y << endl;
             flag = 1;
         }
         else if (flag == 1)
         {
         chessBord[x][y] = 'o';
-        std::cout << "Palyer " << "B with 'o' IS " << "X ," << x << "Y ," << y << endl;
+        std::cout << "Palyer " << "B with 'o' IS " << "X," << x << "Y," << y << endl;
         flag = 0;
         }
         Qijubuzhi();
@@ -252,7 +252,7 @@ int main()
     {
         int x=0, y=0;
         char flager;
-        std::cout << "请输入命令 —";
+        std::cout << "input instruction:";
         cin >> command;
         if ('E' == command)
         {
@@ -261,7 +261,7 @@ int main()
             obj.Qijubuzhi();
             while ('E' == command)
             {
-                std::cout << "请输入坐标";
+                std::cout << "input coordinate:";
                 cin >> x >> y;
                 if (1 == obj.checkcommand(x, y))
                 {
@@ -271,7 +271,7 @@ int main()
 
                 if (0 == obj.Checkzuobiao(x, y, ' ')) //判断棋盘是否下满HAO
                 {
-                    std::cout << "DRAW: againt ?  Y  OR  N  " << endl;
+                    std::cout << "draw:againt ?  Y  OR  N  " << endl;
                     cin >> flager;
                     if (flager == 'N')
                     {
@@ -289,14 +289,14 @@ int main()
                     if (1 == obj.Checkzuobiao(x, y, 'x'))
                     {
                         obj.chessicont(1); //显示比分
-                        std::cout << "   A IS WIN" << endl;
+                        std::cout << "Player A win!" << endl;
                     }
                     if (1 == obj.Checkzuobiao(x, y, 'o'))
                     {
                         obj.chessicont(2);
-                        std::cout << "   B IS WIN" << endl;
+                        std::cout << "Player B win!" << endl;
                     }
-                    std::cout << "againt ?  Y  OR  N  " << endl;
+                    std::cout << "play again? Y or N " << endl;
                     cin >> flager;
                     if (flager == 'N')
                     {
@@ -312,12 +312,12 @@ int main()
         else if ('C' == command)
         {
             system("CLS");
-            std::cout<< "please waitting___" << endl;
+            std::cout<< "please waitting..." << endl;
         }
         else
         {
             system("CLS");
-            std::cout<< "请输入正确的命令" << endl;
+            std::cout<< "invalid command,please input again!" << endl;
             obj.Jiemainbuzhi();
         }
     }
