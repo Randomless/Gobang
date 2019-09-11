@@ -108,7 +108,7 @@ int main()
 
             //机器对战模式  交换先手了！cmdChess.h 256 Line :return 0没有运行的原因！
             while ('E' == command && 'C'==Model){
-
+                step=obj.getflag();
                 //step 0为人类回合，1为机器回合
                 if(step==0){
                     std::cout << "input coordinate:";
@@ -130,12 +130,10 @@ int main()
                     //非成员函数  void ShowResult(GameBoard &obj)
                     
                 }else if(step==1){
-                    //x=x;
-                    y++;
+                    
+                    obj.actionByComputer(x,y);
                     obj.Chesspainter(x, y);
-                    // Compute(x,y); //void compute(int &x,int &y)
-                    // obj.Chesspainter(x,y);
-                    // ShowResult(obj);
+                    
                     if(ShowResult(obj,x,y,flager)==-1){
                         break;
                     }else if(ShowResult(obj,x,y,flager)==0){

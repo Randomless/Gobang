@@ -1,11 +1,11 @@
 #include<iostream>
 #include<iomanip>
+#include<vector>
 using namespace std;
 
 extern const int N = 12;//N为棋盘长宽
 extern int A=0, B=0;//int A B为玩家胜利次数
 extern char Model='C';
-
 
 class GameBoard{
 public:
@@ -18,9 +18,13 @@ public:
     int CheckBoard(int i, int j, char flag);
     void setflag(int f){flag=f;}
     int x, y;  //设置路障
+    int getflag(){return flag;};
+    void calculateScore(); // 计算评分
+    void actionByComputer(int &Row, int &Col); // 机器执行下棋
 protected:
     int flag = 0; //下棋方
     char chessBoard[N + 1][N + 1];//用字符串二维数组表示全部棋子
+    int scoreBoard[N+1][N+1]={0};
 };
 
 //cmd显示胜利者及 A B胜利次数
@@ -41,11 +45,12 @@ void GameBoard::WinnerCount(int x)
 void GameBoard::GameStart()
 {
     std::cout << "_____________Start Game Gobang_________" << '\n';
+    std::cout << "                                       " << '\n';
+    std::cout << "_________    1.enter game : E     _____" << '\n';
+    std::cout << "_________    2.quit game  : Q     _____" << '\n';
+    std::cout << "_________    3.chose model: M     ____" << '\n'; 
+    std::cout << "Model:Human or Computer | Default Config:Computer"<<'\n';
     std::cout << "_______________________________________" << '\n';
-    std::cout << "_____________1.enter game  E___________" << '\n';
-    std::cout << "_____________2.quit game   Q___________" << '\n';
-    std::cout << "_____________3.chose model M__________" << '\n'; 
-    std::cout << "#######################################" << '\n';
 }
 
 //更新棋盘
@@ -227,6 +232,189 @@ int GameBoard::CheckBoard(int i,int j ,char flag)
     return 0;
 }
 
+
+void GameBoard::calculateScore(){
+    int personNum = 0; // 玩家连成子的个数
+    int botNum = 0; // AI连成子的个数
+    int emptyNum = 0; // 各方向空白位的个数
+
+    scoreBoard[N+1][N+1]={0};
+    for (int row = 0; row < N; row++)
+        for (int col = 0; col < N; col++){
+
+            if (row > 0 && col > 0 &&
+                chessBoard[row][col] == ' ')
+            {
+                for (int y = -1; y <= 1; y++)
+                    for (int x = -1; x <= 1; x++)
+                    {
+                        personNum = 0;
+                        botNum = 0;
+                        emptyNum = 0;
+                        if (!(y == 0 && x == 0))
+                        {
+                            // 每个方向延伸4个子
+                            for (int i = 1; i <= 4; i++)
+                            {
+                                if (row + i * y > 0 && row + i * y < N &&
+                                    col + i * x > 0 && col + i * x < N &&
+                                    chessBoard[row + i * y][col + i * x] == 'x') 
+                                {
+                                    personNum++;
+                                }else if (row + i * y > 0 && row + i * y < N &&
+                                         col + i * x > 0 && col + i * x < N &&
+                                         chessBoard[row + i * y][col + i * x] == ' ')
+                                {
+                                    emptyNum++;
+                                    break;
+                                }
+                                else
+                                {
+                                    break;
+                                }
+                                
+                            }
+
+                            for (int i = 1; i <= 4; i++)
+                            {
+                                if (row - i * y > 0 && row - i * y < N &&
+                                    col - i * x > 0 && col - i * x < N &&
+                                    chessBoard[row - i * y][col - i * x] == 'x') 
+                                {personNum++;}
+                                else if(row - i * y > 0 && row - i * y < N &&
+                                         col - i * x > 0 && col - i * x < N &&
+                                         chessBoard[row - i * y][col - i * x] == ' ')
+                                {
+                                    emptyNum++;
+                                    break;
+                                }
+                                else
+                                {
+                                    break;
+                                }  
+                            }
+                            switch (personNum)
+                            {
+                                case 1:
+                                    scoreBoard[row][col]+=10; break;
+                                case 2:
+                                    if (emptyNum == 1)
+                                        scoreBoard[row][col] += 30;
+                                    else if (emptyNum == 2)
+                                        scoreBoard[row][col] += 40;
+                                    break;
+                                case 3:
+                                    if (emptyNum == 1)
+                                        scoreBoard[row][col] += 60;
+                                    else if (emptyNum == 2)
+                                        scoreBoard[row][col] += 110;
+                                    break;
+                                case 4:
+                                    scoreBoard[row][col]+=10100; break;
+                                default:
+                                    break;
+                            } 
+                            emptyNum=0;
+
+                            for (int i = 1; i <= 4; i++)
+                            {
+                                if (row + i * y > 0 && row + i * y < N &&
+                                    col + i * x > 0 && col + i * x < N &&
+                                    chessBoard[row + i * y][col + i * x] == 'x') // 玩家的子
+                                {
+                                    botNum++;
+                                }
+                                else if (row + i * y > 0 && row + i * y < N &&
+                                         col + i * x > 0 && col + i * x < N &&
+                                         chessBoard[row +i * y][col + i * x] == ' ') // 空白位
+                                {
+                                    emptyNum++;
+                                    break;
+                                }
+                                else            // 出边界
+                                    break;
+                            }
+
+                            for (int i = 1; i <= 4; i++)
+                            {
+                                if (row - i * y > 0 && row - i * y < N &&
+                                    col - i * x > 0 && col - i * x < N &&
+                                    chessBoard[row - i * y][col - i * x] == ' ') // AI的子
+                                {
+                                    botNum++;
+                                }
+                                else if (row - i * y > 0 && row - i * y < N &&
+                                         col - i * x > 0 && col - i * x < N &&
+                                         chessBoard[row - i * y][col - i * x] == ' ') // 空白位
+                                {
+                                    emptyNum++;
+                                    break;
+                                }
+                                else            // 出边界
+                                    break;
+                            }
+
+                            if (botNum == 0)                      // 普通下子
+                                scoreBoard[row][col] += 5;
+                            else if (botNum == 1)                 // 活二
+                                scoreBoard[row][col] += 10;
+                            else if (botNum == 2)
+                            {
+                                if (emptyNum == 1)                // 死三
+                                    scoreBoard[row][col] += 25;
+                                else if (emptyNum == 2)
+                                    scoreBoard[row][col] += 50;  // 活三
+                            }
+                            else if (botNum == 3)
+                            {
+                                if (emptyNum == 1)                // 死四
+                                    scoreBoard[row][col] += 55;
+                                else if (emptyNum == 2)
+                                    scoreBoard[row][col] += 100; // 活四
+                            }
+                            else if (botNum >= 4)
+                                scoreBoard[row][col] += 10000;   // 活五
+                            
+                        }
+                    }
+
+            }
+        }
+}
+void GameBoard::actionByComputer(int &row,int &col){
+    calculateScore();
+ 
+    // 从评分中找出最大分数的位置
+    int maxScore = 0;
+    std::vector<std::pair<int, int>> maxPoints;
+
+    for (int row = 1; row < N; row++)
+        for (int col = 1; col < N; col++)
+        {
+            // 前提是这个坐标是空的
+            if (chessBoard[row][col] == ' ')
+            {
+                if (scoreBoard[row][col] > maxScore)          // 找最大的数和坐标
+                {
+                    maxPoints.clear();
+                    maxScore = scoreBoard[row][col];
+                    maxPoints.push_back(std::make_pair(row, col));
+                }
+                else if (scoreBoard[row][col] == maxScore)     // 如果有多个最大的数，都存起来
+                    maxPoints.push_back(std::make_pair(row, col));
+            }
+        }
+    // 随机落子，如果有多个点的话
+    // srand((unsigned)time(0));
+    // int index = rand() % maxPoints.size();
+    int pi=maxPoints.size();
+    int index=pi/2;
+ 
+    std::pair<int, int> pointPair = maxPoints.at(index);
+    row = pointPair.first; // 记录落子点
+    col = pointPair.second;
+    
+}
 /*
  *返回落子结果
  * 
@@ -277,3 +465,4 @@ int ShowResult(GameBoard &obj,int x,int y,char flager){
 
     return 1;
 }
+
