@@ -1,10 +1,6 @@
 # Gobang
 This repo is my 2019 Homework of UCAS C++ programming class
 
-|  Name  |    StudentID    |
-| :----: | :-------------: |
-| 赵智韬 | 201928007010048 |
-
 ## 版本
 - v0.1 实现人人对战及游戏逻辑
 - v0.2 实现基于评分的机器人(相当愚蠢)
@@ -22,10 +18,10 @@ This repo is my 2019 Homework of UCAS C++ programming class
 - chess.o demo.o **.o files**
 
 ## 版本1运行截图
-![1](./Example.png)
+![alt](./Gobang3/pic/Example.png)
 
 ## 版本2运行截图
-![1](./pic2.png)
+![alt](./Gobang3/pic/pic2.png)
 
 ## 代码
 >游戏类
