@@ -1,12 +1,62 @@
+
 #include<iostream>
 #include<stdlib.h>
 #include"cmdChess.h"
 using namespace std;
 
-extern const int N ;  
-extern int A,B;
-extern char Model;
+extern const int N ;
+extern int A=0, B=0;//int A B为玩家胜利次数
+extern char Model='C';
+/*
+ *返回落子结果
+ * 
+ */
+int ShowResult(GameBoard &obj,int x,int y,char flager){
+    if (1== obj.CheckBoard(x, y,'x')|| 1== obj.CheckBoard(x, y, 'o'))
+    {
+        if (1 == obj.CheckBoard(x, y, 'x'))
+        {
+            obj.WinnerCount(1); 
+        }        
+        if (1 == obj.CheckBoard(x, y, 'o'))
+        {
+            obj.WinnerCount(2);
+        }
+        std::cout << '\n' <<"play again? Y or N " << '\n';
+        cin >> flager;
+        if (flager == 'N'||flager=='n')
+        {
+            return -1;
+        }
+        else
+        {
+            obj.initchessBoard();
+            obj.RenewBoard();
+            obj.setflag(0);
+            return 0;//这句没运行????!!
+        }
+    }
 
+     //判断无人获胜的情况
+    if (0 == obj.CheckBoard(x, y, ' ')) //判断棋盘是否下满
+    {
+        std::cout << "Board is full...No on wins..play againt ?  Y  OR  N  " << '\n';
+        cin >> flager;
+        if (flager == 'N'||flager=='n')
+        {
+            return -1;
+        }
+        else
+        {
+            system("CLS");
+            obj.initchessBoard();
+            obj.RenewBoard();
+            return 0;
+        }
+    }
+
+    return 1;
+}
 
 int main()
 {
@@ -63,49 +113,6 @@ int main()
                     obj.setflag(0);
                 }
                 
-                // //判断输赢方并输出统计，询问再来
-                // if (1== obj.CheckBoard(x, y,'x')|| 1== obj.CheckBoard(x, y, 'o'))
-                // {
-                //     //system("CLS");
-                //     if (1 == obj.CheckBoard(x, y, 'x'))
-                //     {
-                //         obj.WinnerCount(1); 
-                //     }
-                //     if (1 == obj.CheckBoard(x, y, 'o'))
-                //     {
-                //         obj.WinnerCount(2);
-                //     }
-                //     std::cout << '\n' <<"play again? Y or N " << '\n';
-                //     cin >> flager;
-                //     if (flager == 'N')
-                //     {
-                //         break;
-                //     }
-                //     else
-                //     {
-                //         obj.initchessBoard();
-                //         obj.RenewBoard();
-                //     }
-                // }
-
-                // //判断无人获胜的情况
-                // if (0 == obj.CheckBoard(x, y, ' ')) //判断棋盘是否下满
-                // {
-                //     std::cout << "Board is full...No on wins..play againt ?  Y  OR  N  " << '\n';
-                //     cin >> flager;
-                //     if (flager == 'N')
-                //     {
-                //         break;
-                //     }
-                //     else
-                //     {
-                //         system("CLS");
-                //         obj.initchessBoard();
-                //         obj.RenewBoard();
-                //     }
-                // }
-            }
-
             //机器对战模式  交换先手了！cmdChess.h 256 Line :return 0没有运行的原因！
             while ('E' == command && 'C'==Model){
                 step=obj.getflag();
